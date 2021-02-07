@@ -19,4 +19,4 @@ Highlight unvisited or uncaptured portals.
 |Blue or Green|Zoom level of map is too small to judge visited or captured.|
 
 ### Known Issue
-In particular, scout controlled portal is sometimes displayed as unvisited even though it is visited. reload often fixes this problem.
+In particular, scout controlled portal is sometimes displayed as unvisited even though it is visited. Reload often fixes this problem.
