@@ -28,6 +28,10 @@ if(typeof window.plugin !== 'function') window.plugin = function() {};
 window.plugin.portalUnvisited = function() {};
 
 window.plugin.portalUnvisited.highlightUnvisited = function(data)  {
+  if(map.getZoom() < 15) {
+    return;
+  }
+  
   var ent = data.portal.options.ent;
   var style = {
     fillColor: data.portal.fillColor,
