@@ -43,7 +43,9 @@ window.plugin.portalUnvisited.highlightUnvisited = function(data)  {
 
     if(ent[2][18] === 1) { // visited = uncaptured
       style.fillColor = 'red';
+
     }else if(ent[2][18] === 3){ // captured
+      style.opacity = 0.5;
       style.fillOpacity = 0.00;
     }
 
@@ -52,7 +54,6 @@ window.plugin.portalUnvisited.highlightUnvisited = function(data)  {
   }
   
   data.portal.setStyle(style);
-
 };
 
 
