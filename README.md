@@ -8,7 +8,7 @@ Highlight unvisited or uncaptured portals.
 [github](https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.user.js)
 
 ### Screen Shot
-![Screen Shot](https://user-images.githubusercontent.com/28938767/107145684-a59d0f80-6986-11eb-8f14-41ca14c687cc.png)
+![Screen Shot](https://user-images.githubusercontent.com/28938767/107219927-11e64480-6a55-11eb-8cf2-103e6a14a0d4.jpg)
 
 ### Legend
 |Fill color of portal|Description|
