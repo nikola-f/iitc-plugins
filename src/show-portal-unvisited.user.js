@@ -2,9 +2,10 @@
 // @id             iitc-plugin-show-portal-unvisited
 // @name           IITC plugin: show portal unvisited
 // @category       Highlighter
-// @version        0.0.1.20210207.18214
+// @version        0.0.2.20210208.18214
 // @namespace      https://github.com/nikola-f/iitc-plugins
-// @downloadURL    https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.js
+// @downloadURL    https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.user.js
+// @updateURL      https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.user.js
 // @homepageURL    https://github.com/nikola-f/iitc-plugins
 // @description Use the fill color of the portals to show if the portal is unvisited or uncaptured.
 // @author nikola-f

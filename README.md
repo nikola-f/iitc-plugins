@@ -5,7 +5,7 @@
 Highlight unvisited or uncaptured portals.
 
 ### Download URL
-[github](https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.js)
+[github](https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.user.js)
 
 ### Screen Shot
 ![Screen Shot](https://user-images.githubusercontent.com/28938767/107145684-a59d0f80-6986-11eb-8f14-41ca14c687cc.png)
@@ -19,4 +19,4 @@ Highlight unvisited or uncaptured portals.
 |Blue or Green|Zoom level of map is too small to judge visited or captured.|
 
 ### Known Issue
-In particular, scout controlled portal is sometimes displayed as unvisited even though it is visited. Reload often fixes this problem.
+In particular, scout controlled portal is sometimes shown as unvisited even though it is visited. Reloading often fixes this problem.
