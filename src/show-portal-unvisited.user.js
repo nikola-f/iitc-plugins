@@ -172,7 +172,8 @@ window.plugin.portalUnvisited.showOption = async function() {
           Enable caching history
         </label>
         <br /><br />
-        <a onclick="window.plugin.portalUnvisited.resetCachedHistory();" tabindex="0">
+        <a onclick="window.plugin.portalUnvisited.resetCachedHistory();" tabindex="0"
+           style="display:block; color:#ffce00; border:1px solid #ffce00; padding:3px 0; margin:10px auto; width:80%; text-align:center;">
           Reset ${cachedCount} cached history
         </a>
       </center>
@@ -189,15 +190,15 @@ window.plugin.portalUnvisited.showOption = async function() {
         window.plugin.portalUnvisited.enableCaching
       );
     }
-  })
+  });
 
 };
 
 
-window.plugin.portalUnvisited.resetCachedHistory = function() {
+window.plugin.portalUnvisited.resetCachedHistory = async function() {
   if(window.confirm('Do you really want to reset all cached history?') &&
      window.plugin.portalUnvisited.db?.history) {
-    window.plugin.portalUnvisited.db.history.clear();
+    await window.plugin.portalUnvisited.db.history.clear();
   }
 };
 
