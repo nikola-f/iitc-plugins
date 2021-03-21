@@ -150,7 +150,16 @@ window.plugin.portalUnvisited.mapDataRefreshEnd = async function() {
 
 };
 
-window.plugin.portalUnvisited.showOption = function() {
+window.plugin.portalUnvisited.showOption = async function() {
+
+  let cachedCount = 0;
+  if(window.plugin.portalUnvisited.db?.history) {
+    try {
+      cachedCount = await window.plugin.portalUnvisited.db.history.count();
+    }catch(err){
+      console.error(err);
+    }
+  }
 
   const html = `
     <div>
@@ -163,11 +172,13 @@ window.plugin.portalUnvisited.showOption = function() {
           Enable caching history
         </label>
         <br /><br />
-        <a onclick="window.plugin.portalUnvisited.resetCachedHistory();" tabindex="0">Reset cached history</a>
+        <a onclick="window.plugin.portalUnvisited.resetCachedHistory();" tabindex="0">
+          Reset ${cachedCount} cached history
+        </a>
       </center>
     </div>
   `;
-  
+
   dialog({
     html: html,
     id: 'plugin-show-portal-unvisited-option',
