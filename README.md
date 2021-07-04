@@ -19,7 +19,7 @@ Highlight unvisited or uncaptured portals.
 |Blue or Green|Zoom level of map is too small to judge visited or captured.|
 
 ### Cache Option
-![Cache Option](https://user-images.githubusercontent.com/28938767/124375778-ddfb0c80-dcde-11eb-92e3-b1689a3a4d3c.jpg
+![Cache Option](https://user-images.githubusercontent.com/28938767/124375778-ddfb0c80-dcde-11eb-92e3-b1689a3a4d3c.jpg)
 If the cache option is enabled, portal history will be cached in your browser or app. The option is enabled by default.
 
 
