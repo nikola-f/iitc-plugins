@@ -18,5 +18,11 @@ Highlight unvisited or uncaptured portals.
 |Transparent|The portal has been captured, also visited.|
 |Blue or Green|Zoom level of map is too small to judge visited or captured.|
 
+### Cache Option
+![Cache Option](https://user-images.githubusercontent.com/28938767/124375778-ddfb0c80-dcde-11eb-92e3-b1689a3a4d3c.jpg)
+
+If the cache option is enabled, portal history will be cached in your browser or app. The option is enabled by default.
+
+
 ### Known Issue
-In particular, scout controlled portal is sometimes shown as unvisited even though it is visited. Reloading often fixes this problem.
+Any portals are sometimes shown as unvisited even though it is visited. Reloading iitc often fixes this problem.
