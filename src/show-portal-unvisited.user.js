@@ -33,7 +33,7 @@ window.plugin.portalUnvisited.STORAGE_KEY_PREFIX =
   `plugin-show-portal-unvisited/${window.PLAYER.nickname}/`;
 
 window.plugin.portalUnvisited.db = null;
-window.plugin.portalUnvisited.enableCaching = false;
+window.plugin.portalUnvisited.enableCaching = true;
 
 
 window.plugin.portalUnvisited.pluginLoaded = async function() {
@@ -42,13 +42,22 @@ window.plugin.portalUnvisited.pluginLoaded = async function() {
     return;
   }
   try {
-    await async function() {
-      return new Promise(function (resolve, reject) {
-        $.getScript('https://cdnjs.cloudflare.com/ajax/libs/dexie/3.0.3/dexie.min.js')
-        .done(function() {resolve()})
-        .fail(function(err) {reject(err)});
-      });
-    }();
+    await Promise.all([
+      async function() {
+        return new Promise(function (resolve, reject) {
+          $.getScript('https://cdnjs.cloudflare.com/ajax/libs/dexie/3.0.3/dexie.min.js')
+          .done(function() {resolve()})
+          .fail(function(err) {reject(err)});
+        });
+      }(),
+      async function() {
+        return new Promise(function (resolve, reject) {
+          $.getScript('https://cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js')
+          .done(function() {resolve()})
+          .fail(function(err) {reject(err)});
+        });
+      }()
+    ]);
   }catch(err){
     console.error(err);
     return;
@@ -77,7 +86,7 @@ window.plugin.portalUnvisited.highlightUnvisited = async function(data)  {
     history.v = data.portal.options.ent[2][18];
   }else if(window.plugin.portalUnvisited.enableCaching === true &&
            window.plugin.portalUnvisited.db?.history){
-    const cached = await window.plugin.portalUnvisited.db.history.get(data.portal.options.guid);
+    const cached = await window.plugin.portalUnvisited.loadHistory(data.portal.options.guid);
     if(cached?.v) {
       history.v = cached.v;
       console.debug('hit:', data.portal.options.data.title || data.portal.options.guid);
@@ -107,6 +116,61 @@ window.plugin.portalUnvisited.highlightUnvisited = async function(data)  {
 
 
 
+window.plugin.portalUnvisited.toHash = function(guids) {
+
+  if(Array.isArray(guids)) {  
+    return guids.map(function(guid) {
+      return md5.arrayBuffer(guid);
+    });
+  }else{
+    return md5.arrayBuffer(guids);
+  }
+};
+
+
+window.plugin.portalUnvisited.loadHistory = async function(guids) {
+
+  if(Array.isArray(guids)) {
+    const histories = await window.plugin.portalUnvisited.db.history.bulkGet(
+      window.plugin.portalUnvisited.toHash(guids)
+    );
+    return histories.filter(function(aHistory) {return !!aHistory});
+  }else{
+    return await window.plugin.portalUnvisited.db.history.get(
+      window.plugin.portalUnvisited.toHash(guids)
+    );
+  }
+
+};
+
+
+window.plugin.portalUnvisited.saveHistory = async function(histories) {
+
+  try {
+
+    if(Array.isArray(histories)) {
+      await window.plugin.portalUnvisited.db.history.bulkPut(
+        histories.map(function(history) {
+          return {
+            "g": window.plugin.portalUnvisited.toHash(history.g),
+            "v": history.v
+          };
+        })
+      );
+    }else{
+      await window.plugin.portalUnvisited.db.history.put({
+        "g": window.plugin.portalUnvisited.toHash(histories.g),
+        "v": histories.v
+      });
+    }
+  }catch(err){
+    console.error(err);
+  }  
+};
+
+
+
+
 window.plugin.portalUnvisited.mapDataRefreshEnd = async function() {
 
   if(map.getZoom() < 15 ||
@@ -116,39 +180,48 @@ window.plugin.portalUnvisited.mapDataRefreshEnd = async function() {
     return;
   }
 
-  const intelHistory = new Object();
-  const cachedHistory = new Object();
-
+  const intelHistory = [];
   for(const guid in window.portals) {
     if(window.portals[guid].options.ent?.[2]?.[18]) {
       intelHistory[guid] = window.portals[guid].options.ent?.[2]?.[18];
+      intelHistory.push({
+        "g": guid,
+        "v": window.portals[guid].options.ent[2][18]
+      });
     }
   }
   console.debug(Object.keys(intelHistory).length + ' history found.');
 
-  const savedHistories = await window.plugin.portalUnvisited.db.history.bulkGet(Object.keys(intelHistory));
-  // result contains undefined.
-  for(const history of savedHistories) {
-    if(history) {
-      cachedHistory[history.g] = history.v;
-    }
+  await window.plugin.portalUnvisited.saveHistory(intelHistory);
+};
+
+
+
+window.plugin.portalUnvisited.portalDetailLoaded = async function(data) {
+  
+  if(window.plugin.portalUnvisited.enableCaching !== true ||
+     window._current_highlighter !== window.plugin.portalUnvisited.HIGHLIGHTER_NAME ||
+     !window.plugin.portalUnvisited.db?.history ||
+     !data.ent?.[2]?.[18]) {
+    return;
   }
 
   try {
-    await window.plugin.portalUnvisited.db.history.bulkPut(
-      Object.keys(intelHistory).filter(function(guid) {
-        return !cachedHistory[guid] || intelHistory[guid] > cachedHistory[guid];
-      })
-      .map(function(guid) {
-        console.debug('try to cache:'+ window.portals[guid].options.data.title);
-        return {"g": guid, "v": intelHistory[guid]};
-      })
-    );
+    const cached = await window.plugin.portalUnvisited.loadHistory(data.guid);
+    // console.debug('portalDetailLoaded:', data.guid);
+
+    if(!cached || cached.v < data.ent[2][18]) {
+      await window.plugin.portalUnvisited.saveHistory({"g": data.guid, "v": data.ent[2][18]});
+      console.debug('selection cached:', data.details.title);
+    }
   }catch(err){
     console.error(err);
   }
 
 };
+
+
+
 
 window.plugin.portalUnvisited.showOption = async function() {
 
@@ -203,38 +276,12 @@ window.plugin.portalUnvisited.resetCachedHistory = async function() {
 };
 
 
-
-window.plugin.portalUnvisited.portalDetailLoaded = async function(data) {
-  
-  if(window.plugin.portalUnvisited.enableCaching !== true ||
-     window._current_highlighter !== window.plugin.portalUnvisited.HIGHLIGHTER_NAME ||
-     !window.plugin.portalUnvisited.db?.history ||
-     !data.ent?.[2]?.[18]) {
-    return;
-  }
-
-  try {
-    const cached = await window.plugin.portalUnvisited.db.history.get(data.guid);
-    if(!cached || cached.v < data.ent[2][18]) {
-      await window.plugin.portalUnvisited.db.history.put(
-        {"g": data.guid, "v": data.ent[2][18]}
-      );
-      console.debug('cached:', data.details.title);
-    }
-  }catch(err){
-    console.error(err);
-  }
-
-};
-
-
-
 var setup =  function() {
 
   const enableCachingString = 
     window.localStorage.getItem(window.plugin.portalUnvisited.STORAGE_KEY_PREFIX + 'enable-caching');
-  if(enableCachingString && enableCachingString === "true") {
-    window.plugin.portalUnvisited.enableCaching = true;
+  if(enableCachingString && enableCachingString === "false") {
+    window.plugin.portalUnvisited.enableCaching = false;
   }
 
   $('<a>')
