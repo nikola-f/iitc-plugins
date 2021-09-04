@@ -98,12 +98,12 @@ window.plugin.portalUnvisited.highlightUnvisited = async function(data)  {
   if(!history.visited) {
     data.portal.setStyle({
       fillColor: 'purple',
-      fillOpacity: 1
+      fillOpacity: 0.8
     });
   }else if(!history.captured){
     data.portal.setStyle({
       fillColor: 'red',
-      fillOpacity: 1
+      fillOpacity: 0.8
     });
   }else{
     data.portal.setStyle({
