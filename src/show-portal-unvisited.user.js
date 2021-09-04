@@ -2,7 +2,7 @@
 // @id             iitc-plugin-show-portal-unvisited
 // @name           IITC plugin: show portal unvisited
 // @category       Highlighter
-// @version        0.0.3.20210704.00239
+// @version        0.0.4.20210904.00239
 // @namespace      https://github.com/nikola-f/iitc-plugins
 // @downloadURL    https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.user.js
 // @updateURL      https://github.com/nikola-f/iitc-plugins/raw/master/src/show-portal-unvisited.user.js
